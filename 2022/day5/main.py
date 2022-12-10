@@ -50,8 +50,35 @@ print(stack_dict)
 for v in stack_dict.values():
     print(v[-1])
 
+# part 2
+# reinitialize list
+stack_dict = {
+    1: ['V','C','D','R','Z','G','B','W'],
+    2: ['G','W','F','C','B','S','T','V'],
+    3: ['C','B','S','N','W'],
+    4: ['Q','G','M','N','J','V','C','P'],
+    5: ['T','S','L','F','D','H','B'],
+    6: ['J','V','T','W','M','N'],
+    7: ['P','F','L','C','S','T','G'],
+    8: ['B','D','Z'],
+    9: ['M','N','Z','W']
+}
 
+def execute_move_part2(stk_dct,num_to_move,from_stack,to_stack):
+    boxes_to_move = ''.join(stk_dct[from_stack])[-num_to_move:]
+    stk_dct[from_stack] = stk_dct[from_stack][:-num_to_move]
+    boxes_to_move = [a for a in boxes_to_move]
+    stk_dct[to_stack].extend(boxes_to_move)
+    return stk_dct
 
+for move in move_list:
+    num_to_move,from_stack,to_stack = unpack_move(move)
+    stack_dict = execute_move_part2(stack_dict,num_to_move,from_stack,to_stack)
+
+print("part2")
+
+for v in stack_dict.values():
+    print(v[-1])
 
 
 
