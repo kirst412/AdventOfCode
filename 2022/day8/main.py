@@ -10,9 +10,9 @@ with open('input.txt') as fp:
 # each digit is a tree height, 0 is shortest 9 is tallest
 # list of string digits
 
-print(lst)
-print("rows ", len(lst))
-print("columns ", len(lst[0]))
+# print(lst)
+# print("rows ", len(lst))
+# print("columns ", len(lst[0]))
 
 # the grid is 99 by 99 grid
 # all trees along the edge are visible
@@ -25,14 +25,11 @@ total += len(lst) * 2 + (len(lst[0]) - 2) * 2
 
 def check_rows(row, column_id):
     truth_list = []
-    prior = row[0]
     for i in range(column_id):
         if row[column_id] > row[i]:
             truth_list.append(True)
-            prior = row[i]
         else:
             truth_list.append(False)
-            prior = row[i]
     if all(truth_list):
         return True
     rev_row = "".join(list(reversed(row)))
@@ -50,6 +47,36 @@ def check_rows(row, column_id):
         return True
     return False
 
+def count_score(row, column_id):
+    # splice to left and right
+    left = row[:column_id]  # does not include the tree
+    right = row[-(len(row) - column_id - 1):]  # does not include the tree
+    # print(left)
+    # print(right)
+    # for the left one, start at the right and count until it is greater than or equal to tree value
+    # for the right one, start at the left and count until it is greater than or equal to tree value
+    score_1 = 0
+    tree_value = row[column_id]
+    # right is easier
+    for i,val in enumerate(right):
+        if val < tree_value:
+            score_1 += 1
+        elif val >= tree_value:
+            score_1 += 1
+            break
+
+    # print(score)
+    score_2 = 0
+    for i,val in enumerate("".join(list(reversed(left)))):
+        # print(val)
+        if val < tree_value:
+            score_2 += 1
+        elif val >= tree_value:
+            score_2 += 1
+            break
+
+    return score_2 * score_1
+
 
 
 def convert_columns_to_list(list, column_id):
@@ -57,6 +84,7 @@ def convert_columns_to_list(list, column_id):
     for i, row in enumerate(list):
         column.append(row[column_id])
     return "".join(column)
+
 
 # iterate through each cell except first and last rows, first and last columns.  add to total if lower than one of the four sides
 total_not_work = []
@@ -90,3 +118,15 @@ print(total)
 
 # between 744 and 2002, not 1410
 
+# part 2
+score_map = defaultdict(int)
+for i, row in enumerate(lst):
+    for j, value in enumerate(row):
+        score_map["{},{}".format(i,j)] = count_score(row, j) * count_score(convert_columns_to_list(lst, j), i)
+
+print(score_map)
+print(max(score_map.values()))
+
+# 0,2 is wrong
+
+# print(count_score(lst[0], 2))
