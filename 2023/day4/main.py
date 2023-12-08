@@ -1,159 +1,103 @@
 
+from collections import defaultdict
+
 with open('input.txt') as fp:
     data = fp.read().split('\n')
 
-print(data)
+# print(data)
 
-indeces = []
-number_indeces = []
+card_sum = 0
 
-for i, row in enumerate(data):
-    # get indeces of symbols
-    num_ind = []
-    for j, item in enumerate(row):
-        if item != '.' and not item.isdigit():
-            indeces.append((i, j))
-        if item.isdigit():
-            num_ind.append(j)
-    number_indeces.append(num_ind)
+card_ids = defaultdict()
 
-good_indeces = []
-
-for i, row in enumerate(number_indeces):
-    good_numbers = []
-    for j, idx in enumerate(row):
-        if i == 0:
-            # check below only
-            if idx == 0 or idx == len(data[i]) - 1:
-            # starting or ending idx of a row, check below only at idx
-                if data[i+1][idx] != '.' and not data[i+1][idx].isdigit():
-                    good_numbers.append(True)
-                else:
-                    good_numbers.append(False)
-            else:
-                # check below only, all around digit
-                if (data[i+1][idx] != '.' and not data[i+1][idx].isdigit()) or (data[i+1][idx-1] != '.' and not data[i+1][idx-1].isdigit()) or (data[i+1][idx+1] != '.' and not data[i+1][idx+1].isdigit()):
-                    good_numbers.append(True)
-                else:
-                    good_numbers.append(False)
-        elif i == len(data) - 1:
-            # check above only
-            if idx == 0 or idx == len(data[i]) - 1:
-            # starting or ending idx of a row, check above only at idx
-                if data[i-1][idx] != '.' and not data[i-1][idx].isdigit():
-                    good_numbers.append(True)
-                else:
-                    good_numbers.append(False)
-            else:
-                # check above only, all around digit
-                if (data[i-1][idx] != '.' and not data[i-1][idx].isdigit()) or (data[i-1][idx-1] != '.' and not data[i-1][idx-1].isdigit()) or (data[i-1][idx+1] != '.' and not data[i-1][idx+1].isdigit()):
-                    good_numbers.append(True)
-                else:
-                    good_numbers.append(False)
-        else:
-            # check above and below, left and right
-            if idx == 0 or idx == len(data[i]) - 1:
-            # starting or ending idx of a row, check above and below only at idx
-                if (data[i-1][idx] != '.' and not data[i-1][idx].isdigit()) or (data[i+1][idx] != '.' and not data[i+1][idx].isdigit()):
-                    good_numbers.append(True)
-                else:
-                    good_numbers.append(False)
-            else:
-                # check above and below, left and right
-                if (data[i-1][idx] != '.' and not data[i-1][idx].isdigit()) or (data[i-1][idx-1] != '.' and not data[i-1][idx-1].isdigit()) or (data[i-1][idx+1] != '.' and not data[i-1][idx+1].isdigit()) or (data[i+1][idx] != '.' and not data[i+1][idx].isdigit()) or (data[i+1][idx-1] != '.' and not data[i+1][idx-1].isdigit()) or (data[i+1][idx+1] != '.' and not data[i+1][idx+1].isdigit()) or (data[i][idx-1] != '.' and not data[i][idx-1].isdigit()) or (data[i][idx+1] != '.' and not data[i][idx+1].isdigit()):
-                    good_numbers.append(True)
-                else:
-                    good_numbers.append(False)
-
-    good_indeces.append(good_numbers)
-
-all = []
-
-sm = 0
-# Now group the number indeces.  If there is no trues in each group, add that number to the sum
-for i, row in enumerate(number_indeces):
-    number_digits = [] # reset this after every summation or skip
-    truth = []
-    # get all digits of this number
-    for j, idx in enumerate(row):
-        if j == 0 and row[j+1] - row[j] > 1:  # start of a digit
-            if any(truth):
-                sm += int(''.join(number_digits))
-                all.append(int(''.join(number_digits)))
-                number_digits = [data[i][idx]]
-                truth = [good_indeces[i][j]]
-            else:
-                number_digits = [data[i][idx]]
-                truth = [good_indeces[i][j]]
-        elif j == 0:  # start of a digit
-            number_digits.append(data[i][idx])
-            truth.append(good_indeces[i][j])
-        elif j == len(row) - 1 and row[j] - row[j-1] > 1:
-            if any(truth):
-                sm += int(''.join(number_digits))
-                all.append(int(''.join(number_digits)))
-                number_digits = [data[i][idx]]
-                truth = [good_indeces[i][j]]
-            number_digits = [data[i][idx]]
-            truth = [good_indeces[i][j]]
-            if any(truth):
-                sm += int(''.join(number_digits))
-                all.append(int(''.join(number_digits)))
-                number_digits = [data[i][idx]]
-                truth = [good_indeces[i][j]]
-            else:
-                number_digits = [data[i][idx]]
-                truth = [good_indeces[i][j]]
-        elif row[j] - row[j-1] > 1:
-            # new digit, do the calculation on the past digit, reset and add
-            if any(truth):
-                sm += int(''.join(number_digits))
-                all.append(int(''.join(number_digits)))
-                number_digits = [data[i][idx]]
-                truth = [good_indeces[i][j]]
-            else:
-                number_digits = [data[i][idx]]
-                truth = [good_indeces[i][j]]
-        elif j == len(row) - 1:
-            number_digits.append(data[i][idx])
-            truth.append(good_indeces[i][j])
-            if any(truth):
-                sm += int(''.join(number_digits))
-                all.append(int(''.join(number_digits)))
-                number_digits = [data[i][idx]]
-                truth = [good_indeces[i][j]]
-            else:
-                number_digits = [data[i][idx]]
-                truth = [good_indeces[i][j]]
-        else:
-            number_digits.append(data[i][idx])
-            truth.append(good_indeces[i][j])
-
-print(sm)
+for card in data:
+    numbers = card.split(":")[1]
+    # print(card.split(":")[0].split(' '))
+    id = [int(item) for item in card.split(":")[0].split(' ') if item.isdigit()][0]
+    winners = numbers.split("|")[0].split(" ")
+    my_numbers = numbers.split("|")[1].split(" ")
+    winners = [int(a) for a in winners if len(a) > 0]
+    my_numbers = [int(a) for a in my_numbers if len(a) > 0]
+    matches = 0
+    card_value = 0.5
+    for number in my_numbers:
+        if number in winners:
+            card_value = card_value * 2
+            matches += 1
+    if card_value > 0.5:
+        card_sum += card_value
+    card_ids[id] = (winners, my_numbers, matches)
 
 
+# print(card_sum)
+# print(card_ids)
 
-import math as m, re
+number_of_cards = 0
+match_counter = []
+card_order = list(card_ids.keys())
 
-board = list(open('input.txt'))
-chars = {(r, c): [] for r in range(140) for c in range(140)
-                    if board[r][c] not in '01234566789.'}
+card_sum = 0
+cards = defaultdict(int)
+multiplier_counter = 0
 
-for r, row in enumerate(board):
-    for n in re.finditer(r'\d+', row):
-        edge = {(r, c) for r in (r-1, r, r+1)
-                       for c in range(n.start()-1, n.end()+1)}
+for key, value in card_ids.items():
+    cards[int(key)] += 1
+    print(value[2])
+    for i in range(1, cards[int(key)] * value[2]+1):
+        cards[int(key)+i] += 1
+    print(cards)
 
-        for o in edge & chars.keys():
-            chars[o].append(int(n.group()))
+print(sum([v for k,v in cards.items()]))
 
-end = []
-for p in chars.values():
-    end.extend(p)
+# print(card_order)
+# i = 0
+# while i < len(card_order) and card_order[i] <= list(card_ids.keys())[-1]:
+#     id = card_order[i]
+#     matches = 0
+#     for number in card_ids[id][1]:
+#         if number in card_ids[id][0]:
+#             matches += 1
+#     if matches > 0:
+#         for j in range(1, matches+1):
+#             idx = card_order.index(id + j)
+#             # print(idx)
+#             # print(j)
+#             card_order.insert(idx, id + j)
+#
+#     print(id)
+#
+#     i += 1
+#
+# print(len(card_order))
+# for i,card in enumerate(data):
+#     numbers = card.split(":")[1]
+#     winners = numbers.split("|")[0].split(" ")
+#     my_numbers = numbers.split("|")[1].split(" ")
+#     winners = [int(a) for a in winners if len(a) > 0]
+#     my_numbers = [int(a) for a in my_numbers if len(a) > 0]
+#     number_of_matches = 0
+#     for number in my_numbers:
+#         if number in winners:
+#             number_of_matches += 1
 
-print(sorted(end))
 
-print(sum(sum(p)    for p in chars.values()),
-      sum(m.prod(p) for p in chars.values() if len(p)==2))
+lines = open('input.txt', 'r').readlines()
 
+def part1():
+    total = 0
+    for line in lines:
+        x, y = map(str.split, line.split('|'))
+        matches = set(x) & set(y)
+        total += 2 ** (len(matches) - 1) if matches else 0
+    return total
 
+def part2():
+    cards = [1] * len(lines)
+    for i, line in enumerate(lines):
+        x, y = map(str.split, line.split('|'))
+        n = len(set(x) & set(y))
+        for j in range(i + 1, min(i + 1 + n, len(lines))):
+            cards[j] += cards[i]
+    return sum(cards)
+
+print(part1(), part2())
