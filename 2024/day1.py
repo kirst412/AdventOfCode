@@ -9,6 +9,8 @@ for pair in lst:
 
 print(len(lsta) == len(lstb))
 
+lsta_copy = lsta.copy()
+lstb_copy = lstb.copy()
 pairings = []
 
 def find_min(lst):
@@ -24,3 +26,11 @@ while len(lsta) != 0:
     lstb.pop(index_b)
 
 print("Part A answer: ",sum_dist)
+
+## part b
+similarity_score = 0
+for item in lsta_copy:
+    # check the number of times that item appears in lstb
+    similarity_score += item * len([i for i, x in enumerate(lstb_copy) if x == item])
+
+print("Part B answer: ", similarity_score)
