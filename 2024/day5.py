@@ -91,6 +91,7 @@ for item in incorr_updates:
     cor_update = [False]
     list_of_numbers = item.split(',')
     list_of_numbers = [int(val) for val in list_of_numbers]
+    
     while not all(cor_update):
         processed_numbers = []
         cor_update = []
