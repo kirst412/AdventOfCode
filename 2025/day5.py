@@ -55,3 +55,4 @@ for low, high in merged_ranges:
     total_2 += (high + 1) - low
 
 print(total_2)
+# test
