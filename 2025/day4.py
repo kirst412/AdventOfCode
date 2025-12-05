@@ -1,4 +1,4 @@
-with open('day4_in.txt') as fp:
+with open('data/day4_in.txt') as fp:
     lst = fp.read().split('\n')
 
 print(lst)
