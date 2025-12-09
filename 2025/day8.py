@@ -3,7 +3,7 @@ import math
 with open('data/day8_in.txt') as fp:
     lst = fp.read().split('\n')
 
-min_num_circuits = 10
+min_num_circuits = 1000
 
 def eucdist(x1, x2, y1, y2, z1, z2):
 	return math.sqrt((x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2)
