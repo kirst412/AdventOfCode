@@ -3,7 +3,7 @@ import math
 with open('data/day8_in.txt') as fp:
     lst = fp.read().split('\n')
 
-min_num_circuits = 6000  # at least greater than 4500
+min_num_circuits = 6006  # at least greater than 6004
 
 def eucdist(x1, x2, y1, y2, z1, z2):
 	return math.sqrt((x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2)
@@ -104,6 +104,10 @@ def connect_circuits(lst, min_num_circuits):
 		new_circuits = combine_circuits(all_pairs)
 		if prev_circuits != new_circuits:
 			prev_circuits = new_circuits
+		lengths = sorted([len(circuit) for circuit in new_circuits], reverse=True)
+		if counter == min_num_circuits and lengths[0] != len(lst):
+			print(min_num_circuits)
+			min_num_circuits += 1
 	
 	print(new_circuits)
 	lengths = sorted([len(circuit) for circuit in new_circuits], reverse=True)
