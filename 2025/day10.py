@@ -1,6 +1,6 @@
 import itertools
 
-with open('data/day10_test.txt') as fp:
+with open('data/day10_in.txt') as fp:
     lst = fp.read().split('\n')
 
 def clean_machine(machine):
@@ -28,8 +28,7 @@ def press_button_group(button_group,machine):
 			machine[button] = '.'
 	return machine
 	
-max_button_groups = 5
-	
+total_presses = 0
 for i,row in enumerate(lst):
 	machine = row.split(' ')[0]
 	machine_final_state = list(clean_machine(machine))
@@ -40,9 +39,21 @@ for i,row in enumerate(lst):
 	# buttons is a list of strings where the string is a tuple
 	# I think I need to get all the unique combinations of button presses
 	# then loop through those until machine_init = machine_final_state
-	button_combos = list(itertools.combinations(cleaned_buttons, max_button_groups))
-	print(cleaned_buttons)
-	print(button_combos)
-	# loop through each combination and keep track of how many presses it took to get final machine_final_state
+	button_combos = list(itertools.permutations(cleaned_buttons))
+	# loop through each permutation and keep track of how many presses it took to get final machine_final_state
+	min_presses = 100
+	print(machine_final_state)
+	for combo in button_combos:
+		current_machine_state = machine_init.copy()
+		button_group_index = 0
+		while current_machine_state != machine_final_state and button_group_index < len(combo):
+			current_machine_state = press_button_group(combo[button_group_index],current_machine_state)
+			button_group_index += 1
+		if button_group_index < min_presses and current_machine_state == machine_final_state:
+			min_presses = button_group_index
+	if min_presses < 100:
+		total_presses += min_presses
 	
+print(total_presses)
+			
 	
