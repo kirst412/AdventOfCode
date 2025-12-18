@@ -65,7 +65,7 @@ def check_for_hash_until_bottom(row_idx, col_idx, grid):
 indeces_to_fill = []
 first_i = None
 for i, row in enumerate(grid):
-	for j,val in enumerate(grid):
+	for j,val in enumerate(grid[i]):
 		rower = i
 		if row[j] == '#' and check_for_hash_until_bottom(i,j,grid) and i != len(grid):
 			while grid[rower+1][j] != '#':
@@ -73,3 +73,12 @@ for i, row in enumerate(grid):
 				rower += 1
 			
 print_grid(grid)
+
+# now that I have a grid, I need ot get areas only where there are hashes
+for i,row in enumerate(grid):
+	# first get the width of this possible rectangle, then get the height
+	first_rectangle = False
+	for j,val in enumerate(row):
+		if not first_rectangle and val == '#':
+			first_rectangle = True
+			
